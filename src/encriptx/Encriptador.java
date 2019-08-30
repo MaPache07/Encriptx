@@ -56,8 +56,8 @@ public class Encriptador {
         return result;        
     }
     
-    public void tran(String msg){
-        msg = msg.replace(" ", "");
+    public void encriptar(String msg){
+        //msg = msg.replace(" ", "");
         Random rand = new Random();
         int key = rand.nextInt(keys.size()),
             lenx = (int) Math.ceil(((double)msg.length())/((double)keys.get(key).length())),
@@ -89,5 +89,46 @@ public class Encriptador {
         }
         System.out.println("El mensaje encriptado es: " + encrip);
         System.out.println("La clave es: " + keys.get(key));
+    }
+    
+    public void desencriptar(String text, String key){
+        int lenx = (int) Math.ceil(((double)text.length())/((double)key.length()));
+        int resto = ((int) Math.ceil(((double)text.length())/((double)key.length())))*3 - text.length();
+        int[] resCol = new int[key.length()];
+        for(int i = 0; i < key.length(); i++){
+            if(key.length()-i <= resto){
+                resCol[i] = lenx-1;
+            }
+            else{
+                resCol[i] = lenx;
+            }
+        }
+        ArrayList<Integer> indexs = new ArrayList();
+        indexs = orderKey(key);
+        char[][] matriz = new char[lenx][key.length()];
+        char[] textChar = text.toCharArray();
+        int x = 0, y = 0, k = 0;
+        while(true){
+            matriz[x][indexs.get(y)] = textChar[k];
+            x++;
+            k++;
+            if(x == resCol[indexs.get(y)]){
+                x = 0;
+                y++;
+                if(y == key.length()) break;
+            }
+        }
+        String msg = "";
+        int i = 0, j = 0;
+        while(true){
+            msg = msg + String.valueOf(matriz[i][j]);
+            j++;
+            if(j == key.length()){
+                i++;
+                j = 0;
+                if(i == lenx) break;
+            }
+        }
+        System.out.println("El mensaje es: " + msg);
     }
 }
